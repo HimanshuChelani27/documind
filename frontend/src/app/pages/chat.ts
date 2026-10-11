@@ -311,6 +311,7 @@ const STAGE_TITLES: Record<StageKey, string> = {
                                 [title]="h.filename + ' · page ' + h.page"
                               >
                                 <span class="w-4 text-right">{{ i + 1 }}</span>
+                                <span class="w-7 shrink-0 text-text-secondary">p{{ h.page }}</span>
                                 <span class="min-w-0 flex-1 truncate">{{ short(h) }}</span>
                                 <span class="tabular-nums">{{ h.score | number: '1.2-3' }}</span>
                               </li>
@@ -557,6 +558,6 @@ export class Chat implements OnDestroy {
   }
 
   protected short(h: StageHit): string {
-    return `${shortName(h.filename)} · p${h.page}`;
+    return shortName(h.filename);
   }
 }

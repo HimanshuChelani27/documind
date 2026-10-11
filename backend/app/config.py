@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     database_url: str | None = None  # defaults to sqlite in data_dir
     samples_dir: Path = BACKEND_DIR.parent / "samples"
     seed_library: bool = True
-    cors_origins: list[str] = ["http://localhost:4200"]
+    cors_origins: list[str] = ["http://localhost:4200", "http://localhost:4300"]
 
     # Models (fastembed / ONNX). Small enough for a 512 MB instance.
     embed_model: str = "BAAI/bge-small-en-v1.5"

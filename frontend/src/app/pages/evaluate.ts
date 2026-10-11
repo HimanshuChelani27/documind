@@ -189,7 +189,7 @@ const CHART = { w: 640, h: 250, left: 36, right: 8, top: 12, bottom: 28 };
             </ul>
           </div>
           <div class="-mx-4 mt-3 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-          <div class="relative min-w-[560px]">
+          <div class="relative mx-auto min-w-[560px] max-w-3xl">
             <svg [attr.viewBox]="'0 0 ' + chart.w + ' ' + chart.h" class="w-full" role="img" [attr.aria-label]="chartLabel()">
               @for (t of ticks; track t) {
                 <line [attr.x1]="chart.left" [attr.x2]="chart.w - chart.right" [attr.y1]="y(t)" [attr.y2]="y(t)" stroke="#29292f" stroke-width="1" [attr.stroke-dasharray]="t === 0 ? null : '2 4'" />
@@ -312,7 +312,7 @@ const CHART = { w: 640, h: 250, left: 36, right: 8, top: 12, bottom: 28 };
                     <tr>
                       <td [attr.colspan]="d.strategies.length + 1" class="border-b border-border-soft bg-bg-raised px-4 py-4">
                         @if (row.reference) {
-                          <p class="mb-3 text-xs"><span class="text-text-muted">Reference answer:</span> <span class="text-text-secondary">{{ row.reference }}</span></p>
+                          <p class="mb-3 text-xs"><span class="text-text-muted">Reference answer:</span>&nbsp;<span class="text-text-secondary">{{ row.reference }}</span></p>
                         }
                         <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                           @for (s of d.strategies; track s) {
@@ -324,7 +324,8 @@ const CHART = { w: 640, h: 250, left: 36, right: 8, top: 12, bottom: 28 };
                                 @for (h of row.strategies[s]?.retrieved ?? []; track $index; let i = $index) {
                                   <li class="flex items-center gap-2 font-mono text-[11px]" [class]="h.relevant ? 'text-ok' : 'text-text-muted'">
                                     <span class="w-4 text-right">{{ i + 1 }}</span>
-                                    <span class="min-w-0 flex-1 truncate">{{ docName(h.filename) }} · p{{ h.page }}</span>
+                                    <span class="w-7 shrink-0">p{{ h.page }}</span>
+                                    <span class="min-w-0 flex-1 truncate">{{ docName(h.filename) }}</span>
                                     @if (h.relevant) {
                                       <app-icon name="check" cls="h-3 w-3" />
                                     }
