@@ -10,6 +10,7 @@ from app.answer.service import AnswerState, citations, stream_answer
 from app.config import get_settings
 from app.db import get_session
 from app.ingest.indexer import get_index
+from app.memory import trim
 from app.ratelimit import enforce
 from app.retrieval.strategies import Strategy, retrieve
 from app.sse import sse, stream_response
@@ -81,5 +82,6 @@ async def chat(
                 },
             }
         )
+        trim()
 
     return stream_response(events())

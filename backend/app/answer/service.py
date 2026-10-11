@@ -44,7 +44,7 @@ async def stream_answer(question: str, hits: list[Hit], state: AnswerState) -> A
                 state.text += delta
                 yield delta
             return
-        except llm.PROVIDER_ERRORS as e:
+        except llm.provider_errors() as e:
             logger.warning("LLM provider failed: %s", e)
             state.fallback_reason = (
                 f"{state.provider.name} failed ({type(e).__name__}); used extractive answer"

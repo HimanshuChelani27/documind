@@ -18,6 +18,7 @@ from app.eval import judge
 from app.eval.metrics import retrieval_metrics
 from app.ingest.embed import embed_queries
 from app.ingest.indexer import get_index
+from app.memory import trim
 from app.models import LIBRARY, EvalDataset, EvalItem, EvalResult, EvalRun
 from app.retrieval.strategies import retrieve
 from app.sse import Channel
@@ -97,7 +98,7 @@ async def run_eval(run_id: str, channel: Channel | None = None) -> None:
                         if state.mode == "live":
                             try:
                                 metrics |= await judge.judge_metrics(provider, item.question, answer, r.hits)
-                            except (*llm.PROVIDER_ERRORS, ValueError) as e:
+                            except (*llm.provider_errors(), ValueError) as e:
                                 logger.warning("Judge failed: %s", e)
                         metrics |= await asyncio.to_thread(judge.proxy_metrics, item.question, answer, r.hits)
                     res = EvalResult(
@@ -137,6 +138,7 @@ async def run_eval(run_id: str, channel: Channel | None = None) -> None:
         except Exception as e:
             logger.exception("Eval run %s failed", run_id)
             run.status, run.error = "failed", str(e)[:300]
+        trim()
         run.finished_at = datetime.now(UTC)
         session.add(run)
         session.commit()

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci",
+  "buildCommand": "node scripts/write-env.mjs && npx ng build",
+  "outputDirectory": "dist/frontend/browser",
+  "rewrites": [{ "source": "/((?!.*\\.).*)", "destination": "/index.html" }],
+  "headers": [{ "source": "/env.js", "headers": [{ "key": "Cache-Control", "value": "no-store" }] }]
+}

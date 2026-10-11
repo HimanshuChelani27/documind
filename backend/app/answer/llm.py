@@ -10,9 +10,6 @@ import logging
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 
-import anthropic
-import openai
-
 from app.config import Settings, get_settings
 
 logger = logging.getLogger("documind.llm")
@@ -28,7 +25,15 @@ BASE_URLS = {
     "google": "https://generativelanguage.googleapis.com/v1beta/openai/",
     "groq": "https://api.groq.com/openai/v1",
 }
-PROVIDER_ERRORS = (anthropic.APIError, openai.APIError, RuntimeError, TimeoutError)
+
+
+def provider_errors() -> tuple[type[BaseException], ...]:
+    """Errors that mean "this provider failed, fall back". The SDKs are imported lazily: a keyless
+    deployment never loads them, which saves ~45 MB of memory."""
+    import anthropic
+    import openai
+
+    return (anthropic.APIError, openai.APIError, RuntimeError, TimeoutError)
 
 
 @dataclass(frozen=True)
@@ -79,6 +84,8 @@ def resolve_provider(settings: Settings | None = None) -> Provider:
 
 
 def _openai_client(p: Provider, timeout: float):
+    import openai
+
     if p.name == "azure":
         return openai.AsyncAzureOpenAI(
             api_key=p.api_key,
@@ -97,6 +104,8 @@ async def stream_completion(
     usage = usage if usage is not None else Usage()
     timeout = get_settings().llm_timeout_seconds
     if p.name == "anthropic":
+        import anthropic
+
         client = anthropic.AsyncAnthropic(api_key=p.api_key, timeout=timeout, max_retries=1)
         async with client.messages.stream(
             model=p.model,

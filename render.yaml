@@ -1,0 +1,33 @@
+# Render blueprint for the API (free plan). The UI deploys to Vercel from frontend/.
+services:
+  - type: web
+    name: documind-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: >-
+      pip install uv &&
+      uv sync --frozen --no-dev &&
+      uv run --no-sync python -m app.prebuild
+    startCommand: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      # The build downloads the models and prepares data/ (library index, gold set, baseline run)
+      # inside the deployed directory, so a cold start only loads files.
+      - key: DOCUMIND_MODEL_CACHE_DIR
+        value: models
+      # One ONNX thread keeps memory comfortably under the 512 MB free-plan limit.
+      - key: DOCUMIND_MODEL_THREADS
+        value: "1"
+      # Fewer glibc malloc arenas: less fragmentation for a small, mostly single-threaded app.
+      - key: MALLOC_ARENA_MAX
+        value: "2"
+      - key: DOCUMIND_CORS_ORIGINS
+        value: '["https://documind-demo.vercel.app","http://localhost:4300"]'
+      # Optional: any one of these switches answers from extractive to LLM-written (and enables judge metrics).
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false

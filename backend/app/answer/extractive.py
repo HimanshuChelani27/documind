@@ -19,7 +19,7 @@ MIN_RELEVANCE = -6.0  # cross-encoder logit below which nothing really answers t
 MARGIN = 1.5  # keep units scoring within this of the best one
 MAX_UNITS = 3
 SOURCES_CONSIDERED = 3
-WINDOW_LINES = 3
+WINDOW_LINES = 2
 WINDOW_CHARS = 110
 
 _SENT = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'(])")
@@ -35,19 +35,20 @@ class Unit:
 
 
 def reflow(text: str) -> list[str]:
-    """Re-joins lines that a PDF wrapped mid-sentence; short lines (headings, table rows) stay."""
+    """Re-joins lines that a PDF wrapped mid-sentence: a near-full-width line without closing
+    punctuation, or a fairly long one followed by a lower-case continuation. Headings and table
+    rows stay apart."""
     lines = [ln.strip() for ln in text.split("\n") if ln.strip()]
     if not lines:
         return []
     width = max(len(ln) for ln in lines)
-    out: list[str] = []
-    joining = False
-    for ln in lines:
-        if joining and out:
+    out = [lines[0]]
+    for prev, ln in zip(lines, lines[1:], strict=False):
+        open_end = width >= 60 and not prev.endswith(_END)
+        if open_end and (len(prev) >= 0.85 * width or (len(prev) >= 0.7 * width and ln[0].islower())):
             out[-1] += " " + ln
         else:
             out.append(ln)
-        joining = width >= 60 and len(ln) >= 0.7 * width and not ln.endswith(_END)
     return out
 
 
@@ -80,7 +81,8 @@ def units(text: str) -> list[Unit]:
             ):
                 last += 1
                 window += " " + lines[last]
-            if re.search(r"[A-Za-z]", window) and len(window) >= 8:
+            # Very long "rows" are usually several table rows the PDF merged into one line.
+            if re.search(r"[A-Za-z]", window) and 8 <= len(window) <= WINDOW_CHARS + 70:
                 out.append(Unit(f"{window} ({label})", r, last, False))
         i = j
     return out
@@ -113,8 +115,8 @@ def extractive_answer(question: str, hits: list[Hit]) -> tuple[str, float]:
             break
         n, pos, u = cands[i]
         span = set(range(u.first, u.last + 1))
-        if not u.sentence and span <= taken.get(n, set()):
-            continue  # table window already covered by a better one
+        if not u.sentence and span & taken.get(n, set()):
+            continue  # overlaps a better table window
         text = u.text
         # A short topic sentence ("Q2 was difficult.") is usually followed by the actual reason.
         nxt = per_source[n][pos + 1] if pos + 1 < len(per_source[n]) else None

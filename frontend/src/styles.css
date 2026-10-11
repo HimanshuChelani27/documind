@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0c0c0f;
+  --color-bg-raised: #131316;
+  --color-surface: #17171b;
+  --color-surface-2: #1c1c21;
+  --color-border: #29292f;
+  --color-border-soft: #202024;
+  --color-text-primary: #f2f1ee;
+  --color-text-secondary: #b9b9c1;
+  --color-text-muted: #85858f;
+  --color-accent: #4fc3a1;
+  --color-accent-soft: #8be0c6;
+  --color-accent-ink: #06261d;
+  --color-violet: #7d6bf5;
+  --color-violet-soft: #a497ff;
+  --color-ok: #4fc3a1;
+  --color-deny: #f0716f;
+  --color-warn: #f5b84f;
+  --color-info: #5fa8f5;
+
+  --font-sans: "Geist", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 {
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+  mark {
+    background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+    color: var(--color-text-primary);
+    border-radius: 3px;
+    padding: 0 1px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-border bg-surface;
+  }
+  .chip {
+    @apply inline-flex items-center rounded-full border border-border-soft bg-surface-2 px-2 py-0.5 font-mono text-[11px] text-text-secondary;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink transition hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-text-primary transition hover:border-accent/60 hover:bg-surface-2 disabled:opacity-50;
+  }
+  .input {
+    @apply w-full rounded-xl border border-border bg-bg-raised px-3.5 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium text-text-secondary;
+  }
+  .page-title {
+    @apply text-2xl font-semibold;
+  }
+  .page-sub {
+    @apply mt-1 text-sm text-text-muted;
+  }
+  .table-head {
+    @apply border-b border-border-soft px-4 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-text-muted;
+  }
+  .table-cell {
+    @apply border-b border-border-soft px-4 py-3 align-top text-sm;
+  }
+  .cite {
+    @apply mx-0.5 inline-flex h-[18px] min-w-[18px] -translate-y-px items-center justify-center rounded-md bg-accent/15 px-1 font-mono text-[11px] font-medium text-accent-soft transition hover:bg-accent hover:text-accent-ink;
+  }
+  .seg {
+    @apply rounded-full px-3 py-1 text-xs transition;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

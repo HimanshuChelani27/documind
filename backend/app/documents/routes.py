@@ -9,6 +9,7 @@ from app.config import get_settings
 from app.db import engine, get_session
 from app.ingest import pipeline
 from app.ingest.pdf import PdfError, is_pdf
+from app.memory import trim
 from app.models import LIBRARY, Chunk, Document
 from app.ratelimit import enforce
 from app.sse import Channel, channel_response
@@ -157,6 +158,7 @@ async def _run_ingest(doc_id: str, data: bytes, channel: Channel) -> None:
 
     try:
         result = await asyncio.to_thread(work)
+        trim()
         await channel.publish({"type": "done", "document": result}, final=True)
     except Exception:
         logger.exception("Ingestion job %s crashed", doc_id)

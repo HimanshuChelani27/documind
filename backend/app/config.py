@@ -25,8 +25,10 @@ class Settings(BaseSettings):
     # Models (fastembed / ONNX). Small enough for a 512 MB instance.
     embed_model: str = "BAAI/bge-small-en-v1.5"
     rerank_model: str = "Xenova/ms-marco-MiniLM-L-6-v2"
+    rerank_quantized: bool = True
     model_threads: int | None = None  # ONNX threads; 1-2 keeps memory low on small hosts
     model_cache_dir: Path | None = None
+    model_mem_arena: bool = False
 
     # Chunking
     chunk_size: int = 800
