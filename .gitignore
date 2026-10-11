@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.db
+*.db-journal
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# Env & OS
+.env
+.DS_Store
+.vercel/
+
+# DocuMind runtime data
+backend/data/
