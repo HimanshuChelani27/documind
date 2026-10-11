@@ -149,7 +149,7 @@ All settings use the `DOCUMIND_` prefix (see `backend/app/config.py`). LLM keys 
 | `ANTHROPIC_API_KEY` / `GOOGLE_API_KEY` / `GROQ_API_KEY` / `OPENAI_API_KEY` | – | First one set wins, in this order |
 | `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT` | – | Azure OpenAI |
 | `DOCUMIND_LLM_PROVIDER` | auto | `anthropic`, `google`, `groq`, `openai`, `azure`, `ollama` or `extractive` |
-| `DOCUMIND_LLM_MODEL` | per provider | e.g. `claude-haiku-5-5`, `gemini-2.5-flash`, `llama-3.3-70b-versatile` |
+| `DOCUMIND_LLM_MODEL` | per provider | e.g. `claude-haiku-5-5`, `gemini-flash-lite-latest`, `llama-3.3-70b-versatile` |
 | `DOCUMIND_CORS_ORIGINS` | localhost:4200 and :4300 | JSON list |
 | `DOCUMIND_MODEL_THREADS` | ONNX default | `1` on small instances |
 | `DOCUMIND_MAX_UPLOAD_MB`, `DOCUMIND_MAX_PAGES`, `DOCUMIND_MAX_DOCS_PER_WORKSPACE`, `DOCUMIND_WORKSPACE_TTL_HOURS` | 5, 40, 5, 24 | Upload limits |
